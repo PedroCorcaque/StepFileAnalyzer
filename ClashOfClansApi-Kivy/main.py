@@ -40,8 +40,12 @@ class ClashApp(App):
     def chamarApi(self):
         client = Api(api_token)
         data = client.clan_members_for("U99PGPV")
+        df = pd.DataFrame(data['items'])
+        df.to_excel('teste.xlsm',sheet_name='Doaçoes')
+        return exit(1)
 
-    button = Button(text='Hello-World',font_size=14)
+
+    button = Button(text='Gerar arquivo de doações',font_size=21,size_hint=(0.4,0.2),pos_hint={'center_x':0.5,'center_y':0.5})
     button.bind(on_press=chamarApi)
 
     def build(self):
