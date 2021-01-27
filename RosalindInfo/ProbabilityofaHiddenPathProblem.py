@@ -2,6 +2,8 @@ hiddenPath = input('Hidden Path input: ')
 states = input('States input: ')
 transitions = []
 
+startProb = [0.5, 0.5, 0.5, 0.5]
+
 aux = []
 for i in range(0,2):
     x = input('Linha 1 - Coluna ' + str(i) + ': ')
@@ -12,5 +14,4 @@ for i in range(0,2):
     aux=[]
 
 for letter in hiddenPath:
-    if letter == states:
-        
+           
