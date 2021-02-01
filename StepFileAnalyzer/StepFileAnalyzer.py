@@ -1,15 +1,7 @@
-import sys, io, argparse
+import sys, io, argparse, re
 from steputils import p21
 import numpy as np 
 
-'''
-Deve chamar uma função recursiva para eliminar as possibilidades das formas.
-
-1º - Especificar cada forma;
-2º - Função de abertura de arquivo;
-3º - Função de chamada recursiva - Mostrar quais formas possiveis a cada revolução;
-4º - Ter uma única saída
-'''
 
 argumentos = argparse.ArgumentParser(
     formatter_class=argparse.MetavarTypeHelpFormatter,
@@ -19,7 +11,7 @@ argumentos.add_argument("-f", "--file", required=True, help="path of the input s
 args = vars(argumentos.parse_args())
 arquivo = args["file"]
 
-def carregar_arquivo_step():
+def circle_type():
     
     try:
         arquivoStep = p21.readfile(arquivo)
@@ -93,6 +85,70 @@ def carregar_arquivo_step():
         }
         for titulo,valor in resposta.items():
             print(titulo, valor)        
-                
 
-carregar_arquivo_step()
+def cylinder_type():
+
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        # Finds cylinder line
+        line = str(arquivoStep.__getitem__('#192'))
+        values = line[line.find('(')+1:-3].split(',')
+        
+        # name = values[0]
+        AXIS2_PLACEMENT_3D = values[1]
+        RADIUS = values[2]
+
+        # Finds axis2_placement_3d line
+        AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
+        values = AXIS2_PLACEMENT_3D_LINE[AXIS2_PLACEMENT_3D_LINE.find('(')+1:-3].split(',')
+
+        # name = values[0]
+        LOCATION = values[1]
+        Z_AXIS = values[2]
+        X_AXIS = values[3]
+
+        # Finds location value
+        LOCATION_LINE = str(arquivoStep.__getitem__(LOCATION))
+        values = LOCATION_LINE[LOCATION_LINE.find('(')+1:-4].split(',(')
+
+        # name = values[0]
+        LOCATION = values[1].split(',')
+        
+        # Finds axis values
+        AXIS_LINE = str(arquivoStep.__getitem__(Z_AXIS))
+        values = AXIS_LINE[AXIS_LINE.find('(')+1:-4].split(',(') # Z axis
+        
+        # name = values[0]
+        Z_AXIS = values[1].split(',')
+        
+        AXIS_LINE = str(arquivoStep.__getitem__(X_AXIS))
+        values = AXIS_LINE[AXIS_LINE.find('(')+1:-4].split(',(')
+
+        # name = values[0]
+        X_AXIS = values[1].split(',')
+        
+        features = {
+            "coefficients: ":"?",
+            "face_indices: ":"?",
+            "location: ":LOCATION,
+            "radius: ":RADIUS,
+            "type: ":"Cylinder",
+            "vert_indices: ":"?",
+            "vert_parameters: ":"?",
+            "x_axis: ":X_AXIS,
+            "y_axis: ":"?",
+            "z_axis: ":Z_AXIS,
+        }
+
+        for item,valor in features.items():
+            print(item,valor)
+        
+        
+
+
+cylinder_type()
