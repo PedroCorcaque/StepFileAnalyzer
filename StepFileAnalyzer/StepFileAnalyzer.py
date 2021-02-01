@@ -178,5 +178,63 @@ def line_type(identifier): # identifier = "#id"
         for item, value in features.items():
             print(item, value)
 
+def plane_type(identifier): # identifier = "#id"
+
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        line = str(arquivoStep.__getitem__(identifier))
+        values = line[line.find('(')+1:-3].split(',')
         
-line_type("#1029")
+        # name = values[0]
+        AXIS2_PLACEMENT_3D = values[1]
+
+        # Finds axis2_placement_3d line
+        AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
+        values = AXIS2_PLACEMENT_3D_LINE[AXIS2_PLACEMENT_3D_LINE.find('(')+1:-3].split(',')
+        
+        # name = values[0]
+        CARTESIAN_POINT, DIRECTION_1, DIRECTION_2 = values[1], values[2], values[3]
+        
+        # Finds cartesian_point line
+        CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
+        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-4].split(',(')
+        
+        # name = values[0]
+        LOCATION = values[1].split(',')
+        
+        # Finds direction_1 line
+        DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
+        values = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-4].split(',(')
+        
+        # name = values[0]
+        Z_AXIS = values[1].split(',')
+        
+        # Finds direction_2 line
+        DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
+        values = DIRECTION_2_LINE[DIRECTION_2_LINE.find('(')+1:-4].split(',(')
+        
+        # name = values[0]
+        X_AXIS = values[1].split(',')
+        
+        features = {
+            "coefficients: ":"?",
+            "face_indices: ":"?",
+            "location: ":LOCATION,
+            "type: ":"Plane",
+            "vert_indices: ":"?",
+            "vert_parameters: ":"?",
+            "x_axis: ":X_AXIS,
+            "y_axis: ":"?",
+            "z_axis: ":Z_AXIS,
+        }
+
+        for item, value in features.items():
+            print(item, value)
+
+
+plane_type("#189")
