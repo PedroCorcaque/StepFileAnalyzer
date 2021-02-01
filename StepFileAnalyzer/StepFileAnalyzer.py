@@ -11,7 +11,7 @@ argumentos.add_argument("-f", "--file", required=True, help="path of the input s
 args = vars(argumentos.parse_args())
 arquivo = args["file"]
 
-def circle_type():
+def circle_type(identifier): # identifier = "#id"
     
     try:
         arquivoStep = p21.readfile(arquivo)
@@ -20,7 +20,7 @@ def circle_type():
     except ParseError as e:
         print(str(e))
     else: # uploaded file
-        line = str(arquivoStep.__getitem__('#1040'))
+        line = str(arquivoStep.__getitem__(identifier))
         values = line[line.find('(')+1:-3].split(',')
         
         # name = values[0]
@@ -70,7 +70,7 @@ def circle_type():
             print(item, value)
                    
 
-def cylinder_type():
+def cylinder_type(identifier): # identifier = "#id"
 
     try:
         arquivoStep = p21.readfile(arquivo)
@@ -80,7 +80,7 @@ def cylinder_type():
         print(str(e))
     else: # uploaded file
         # Finds cylinder line
-        line = str(arquivoStep.__getitem__('#192'))
+        line = str(arquivoStep.__getitem__(identifier))
         values = line[line.find('(')+1:-3].split(',')
         
         # name = values[0]
@@ -130,3 +130,53 @@ def cylinder_type():
         for item,value in features.items():
             print(item, value)
         
+def line_type(identifier): # identifier = "#id"
+
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        line = str(arquivoStep.__getitem__(identifier))
+        values = line[line.find('(')+1:-3].split(',')
+        
+        # name = values[0]
+        CARTESIAN_POINT, VECTOR = values[1], values[2]
+        
+        # Finds cartesian_point line
+        CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
+        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-4].split(',(')
+        
+        # name = values[0]
+        LOCATION = values[1].split(',')
+        
+        # Finds vector line
+        VECTOR_LINE = str(arquivoStep.__getitem__(VECTOR))
+        values = VECTOR_LINE[VECTOR_LINE.find('(')+1:-4].split(',')
+        
+        # name = values[0]
+        DIRECTION = values[1]
+
+        # Finds direction line
+        DIRECTION_LINE = str(arquivoStep.__getitem__(DIRECTION))
+        values = DIRECTION_LINE[DIRECTION_LINE.find('(')+1:-4].split(',(')
+
+        # name = values[0]
+        DIRECTION = values[1].split(',')
+        
+        features = {
+            "direction: ":DIRECTION,
+            "location: ":LOCATION,
+            "sharp: ":"?",
+            "type: ":"Line",
+            "vert_indices: ":"?",
+            "vert_parameters: ":"?",
+        }
+
+        for item, value in features.items():
+            print(item, value)
+
+        
+line_type("#1029")
