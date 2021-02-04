@@ -237,4 +237,38 @@ def plane_type(identifier): # identifier = "#id"
             print(item, value)
 
 
-plane_type("#189")
+def main():
+
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        line_one = str(arquivoStep.__getitem__("#1"))
+        values = line_one[line_one.find('(')+1:-3].split(',(')
+        values = values[1].split('),')
+        
+        STYLED_ITEMS = values[0].split(',')
+        count = 1
+        for items in STYLED_ITEMS:# alterar para for
+            line = str(arquivoStep.__getitem__(items))
+            values = line[line.find('(')+1:-3].split(',')
+            
+            ADVANCED_FACE = values[2]
+
+            ADVANCED_FACE_LINE = str(arquivoStep.__getitem__(ADVANCED_FACE))
+            values = ADVANCED_FACE_LINE[ADVANCED_FACE_LINE.find('(')+1:-3].split(',')
+            
+            FACE_OUTER_BOUND = values[1].replace("(","").replace(")","")
+            SURFACE_TYPE = values[2]
+
+            # Finds surface line
+            SURFACE_LINE = str(arquivoStep.__getitem__(SURFACE_TYPE))
+            if 'PLANE' in SURFACE_LINE:
+                print(f'------------------PLANO {count}----------------')
+                count+=1
+                plane_type(SURFACE_TYPE)
+
+main()
