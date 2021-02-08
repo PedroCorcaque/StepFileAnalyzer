@@ -251,8 +251,13 @@ def main():
         values = values[1].split('),')
         
         STYLED_ITEMS = values[0].split(',')
-        count = 1
-        for items in STYLED_ITEMS:# alterar para for
+
+        count_plane = 1
+        count_cylinder = 1
+        count_circle = 1
+        count_line = 1
+        for items in STYLED_ITEMS: # percorre os ids de faces
+            
             line = str(arquivoStep.__getitem__(items))
             values = line[line.find('(')+1:-3].split(',')
             
@@ -263,12 +268,58 @@ def main():
             
             FACE_OUTER_BOUND = values[1].replace("(","").replace(")","")
             SURFACE_TYPE = values[2]
+            
+            # Curves
+            
+            FACE_OUTER_BOUND_LINE = str(arquivoStep.__getitem__(FACE_OUTER_BOUND))
+            values = FACE_OUTER_BOUND_LINE[FACE_OUTER_BOUND_LINE.find('(')+1:-3].split(',')
+            
+            EDGE_LOOP = values[1]
+            EDGE_LOOP_LINE = str(arquivoStep.__getitem__(EDGE_LOOP))
+            values = EDGE_LOOP_LINE[EDGE_LOOP_LINE.find('(')+1:-3].split(',')
+            
+            ORIENTED_EDGES = values[1:5] 
 
-            # Finds surface line
+            for EDGE_CURVE in ORIENTED_EDGES:
+                ORIENTED_EDGES_LINE = str(arquivoStep.__getitem__(EDGE_CURVE.replace('(','').replace(')','')))
+                values = ORIENTED_EDGES_LINE[ORIENTED_EDGES_LINE.find('(')+1:-3].split(',')
+                
+                EDGE_CURVE = values[3]
+                EDGE_CURVE_LINE = str(arquivoStep.__getitem__(EDGE_CURVE))
+                values = EDGE_CURVE_LINE[EDGE_CURVE_LINE.find('(')+1:-3].split(',')
+
+                START_POINT = values[1]
+                END_POINT = values[2]
+                CURVE_TYPE = values[3]
+
+                CURVE_LINE = str(arquivoStep.__getitem__(CURVE_TYPE))
+                
+                if 'CIRCLE' in CURVE_LINE:
+                    print(f'\n------------------CIRCULO {count_circle}----------------')
+                    count_circle+=1
+                    circle_type(CURVE_TYPE)
+                
+                if 'LINE' in CURVE_LINE:
+                    print(f'\n------------------LINHA {count_line}----------------')
+                    count_line+=1
+                    line_type(CURVE_TYPE)
+        
+            
             SURFACE_LINE = str(arquivoStep.__getitem__(SURFACE_TYPE))
+
+            # Surfaces - *Conical and Toroidal
+
+            if 'CYLINDRICAL' in SURFACE_LINE:
+                print(f'\n------------------CILINDRO {count_cylinder}----------------')
+                count_cylinder+=1
+                cylinder_type(SURFACE_TYPE)
+            
             if 'PLANE' in SURFACE_LINE:
-                print(f'------------------PLANO {count}----------------')
-                count+=1
+                print(f'\n------------------PLANO {count_plane}----------------')
+                count_plane+=1
                 plane_type(SURFACE_TYPE)
+
+
+            
 
 main()
