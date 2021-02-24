@@ -235,6 +235,59 @@ def plane_type(identifier): # identifier = "#id"
 
         # for item, value in features.items():
         #     print(item, value)
+        
+def cone_type(identifier):
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        line = str(arquivoStep.__getitem__(identifier))
+        values = line[line.find('(')+1:-3].split(',')
+        
+        AXIS2_PLACEMENT_3D = values[1]
+        RADIUS = values[2]
+        ANGLE = values[3]
+
+        AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
+        values = AXIS2_PLACEMENT_3D_LINE[AXIS2_PLACEMENT_3D_LINE.find('(')+1:-3].split(',')
+        
+        CARTESIAN_POINT = values[1]
+        DIRECTION_1 = values[2]
+        DIRECTION_2 = values[3]
+
+        CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
+        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-3].split(',(')
+        CARTESIAN_POINT = values[1].replace(')','')
+
+        DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
+        values = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-3].split(',(')
+        Z_AXIS = values[1].replace(')','')
+
+        DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
+        values = DIRECTION_2_LINE[DIRECTION_2_LINE.find('(')+1:-3].split(',(')
+        X_AXIS = values[1].replace(')','')
+
+        features = {
+            'angle: ': ANGLE,
+            'apex: ': "?",
+            'coefficients: ': "?",
+            'face_indices: ': "?",
+            'location: ': "?",
+            'radius: ': RADIUS,
+            'type: ': 'Cone',
+            'vert_indices: ': "?",
+            'vert_parameters: ': "?",
+            'x_axis: ': X_AXIS,
+            'y_axis: ': "?",
+            'z_axis: ': Z_AXIS,
+        }
+
+        # for item,valor in features.items():
+        #     print(item, valor)
+
 
 def main():
     count_plane = 0
@@ -256,7 +309,7 @@ def main():
 
         CHECKED_CURVES = []
         for items in STYLED_ITEMS: # percorre os ids de faces
-            
+            surface_visto = 0
             line = str(arquivoStep.__getitem__(items))
             values = line[line.find('(')+1:-3].split(',')
             
@@ -280,6 +333,7 @@ def main():
             ORIENTED_EDGES = values[1:5] 
 
             for EDGE_CURVE in ORIENTED_EDGES:
+                curve_visto = 0
                 ORIENTED_EDGES_LINE = str(arquivoStep.__getitem__(EDGE_CURVE.replace('(','').replace(')','')))
                 values = ORIENTED_EDGES_LINE[ORIENTED_EDGES_LINE.find('(')+1:-3].split(',')
                 
@@ -293,32 +347,46 @@ def main():
 
                 CURVE_LINE = str(arquivoStep.__getitem__(CURVE_TYPE))
                 if 'CIRCLE' in CURVE_LINE and CURVE_TYPE not in CHECKED_CURVES:
+                    curve_visto = 1
                     CHECKED_CURVES.append(CURVE_TYPE)
                     #print(f'\n\n------------------CIRCULO {count_circle}----------------')
                     count_circle+=1
                     circle_type(CURVE_TYPE)
                 
                 if 'LINE' in CURVE_LINE and CURVE_TYPE not in CHECKED_CURVES:
+                    curve_visto = 1
                     CHECKED_CURVES.append(CURVE_TYPE)
                     #print(f'\n\n------------------LINHA {count_line}----------------')
                     count_line+=1
                     line_type(CURVE_TYPE)
+            
+                if curve_visto == 0:
+                    print(f'CURVA NÃO ENCONTRADA: \n{CURVE_LINE}\n')
+                
+                curve_visto = 0
         
             
-            SURFACE_LINE = str(arquivoStep.__getitem__(SURFACE_TYPE))
+            SURFACE_LINE = str(arquivoStep.__getitem__(SURFACE_TYPE.replace('(','').replace(')','')))
 
             # Surfaces - *Conical and Toroidal
 
             if 'CYLINDRICAL' in SURFACE_LINE:
+                surface_visto = 1
                 #print(f'\n\n------------------CILINDRO {count_cylinder}----------------')
                 count_cylinder+=1
                 cylinder_type(SURFACE_TYPE)
             
             if 'PLANE' in SURFACE_LINE:
+                surface_visto = 1
                 #print(f'\n\n------------------PLANO {count_plane}----------------')
                 count_plane+=1
                 plane_type(SURFACE_TYPE)
             
+            if surface_visto == 0:
+                print(f'SUPERFICIE NÃO ENCONTRADO:\n{SURFACE_LINE}\n')
+            
+            surface_visto = 0
+
             print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}')
             
-main()
+cone_type('#68')
