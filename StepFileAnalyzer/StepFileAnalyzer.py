@@ -66,8 +66,8 @@ def circle_type(identifier): # identifier = "#id"
             "z_axis: ":Z_AXIS,
         }
         
-        for item, value in features.items():
-            print(item, value)
+        # for item, value in features.items():
+        #     print(item, value)
                    
 
 def cylinder_type(identifier): # identifier = "#id"
@@ -127,8 +127,8 @@ def cylinder_type(identifier): # identifier = "#id"
             "z_axis: ":Z_AXIS,
         }
 
-        for item,value in features.items():
-            print(item, value)
+        # for item,value in features.items():
+        #     print(item, value)
         
 def line_type(identifier): # identifier = "#id"
 
@@ -175,8 +175,8 @@ def line_type(identifier): # identifier = "#id"
             "vert_parameters: ":"?",
         }
 
-        for item, value in features.items():
-            print(item, value)
+        # for item, value in features.items():
+        #     print(item, value)
 
 def plane_type(identifier): # identifier = "#id"
 
@@ -233,12 +233,14 @@ def plane_type(identifier): # identifier = "#id"
             "z_axis: ":Z_AXIS,
         }
 
-        for item, value in features.items():
-            print(item, value)
-
+        # for item, value in features.items():
+        #     print(item, value)
 
 def main():
-
+    count_plane = 0
+    count_cylinder = 0
+    count_circle = 0
+    count_line = 0
     try:
         arquivoStep = p21.readfile(arquivo)
     except IOError as e:
@@ -252,10 +254,7 @@ def main():
         
         STYLED_ITEMS = values[0].split(',')
 
-        count_plane = 1
-        count_cylinder = 1
-        count_circle = 1
-        count_line = 1
+        CHECKED_CURVES = []
         for items in STYLED_ITEMS: # percorre os ids de faces
             
             line = str(arquivoStep.__getitem__(items))
@@ -293,14 +292,15 @@ def main():
                 CURVE_TYPE = values[3]
 
                 CURVE_LINE = str(arquivoStep.__getitem__(CURVE_TYPE))
-                
-                if 'CIRCLE' in CURVE_LINE:
-                    print(f'\n------------------CIRCULO {count_circle}----------------')
+                if 'CIRCLE' in CURVE_LINE and CURVE_TYPE not in CHECKED_CURVES:
+                    CHECKED_CURVES.append(CURVE_TYPE)
+                    #print(f'\n\n------------------CIRCULO {count_circle}----------------')
                     count_circle+=1
                     circle_type(CURVE_TYPE)
                 
-                if 'LINE' in CURVE_LINE:
-                    print(f'\n------------------LINHA {count_line}----------------')
+                if 'LINE' in CURVE_LINE and CURVE_TYPE not in CHECKED_CURVES:
+                    CHECKED_CURVES.append(CURVE_TYPE)
+                    #print(f'\n\n------------------LINHA {count_line}----------------')
                     count_line+=1
                     line_type(CURVE_TYPE)
         
@@ -310,16 +310,15 @@ def main():
             # Surfaces - *Conical and Toroidal
 
             if 'CYLINDRICAL' in SURFACE_LINE:
-                print(f'\n------------------CILINDRO {count_cylinder}----------------')
+                #print(f'\n\n------------------CILINDRO {count_cylinder}----------------')
                 count_cylinder+=1
                 cylinder_type(SURFACE_TYPE)
             
             if 'PLANE' in SURFACE_LINE:
-                print(f'\n------------------PLANO {count_plane}----------------')
+                #print(f'\n\n------------------PLANO {count_plane}----------------')
                 count_plane+=1
                 plane_type(SURFACE_TYPE)
-
-
             
-
+            print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}')
+            
 main()
