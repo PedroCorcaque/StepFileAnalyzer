@@ -294,6 +294,7 @@ def main():
     count_cylinder = 0
     count_circle = 0
     count_line = 0
+    count_cone = 0
     try:
         arquivoStep = p21.readfile(arquivo)
     except IOError as e:
@@ -381,12 +382,19 @@ def main():
                 #print(f'\n\n------------------PLANO {count_plane}----------------')
                 count_plane+=1
                 plane_type(SURFACE_TYPE)
+
+            if 'CONICAL' in SURFACE_LINE:
+                surface_visto = 1
+                #print(f'\n\n------------------CONE {count_cone}----------------')
+                count_cone+=1
+                cone_type(SURFACE_TYPE)
+
             
             if surface_visto == 0:
                 print(f'SUPERFICIE NÃO ENCONTRADO:\n{SURFACE_LINE}\n')
             
             surface_visto = 0
 
-            print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}')
+            print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}\nCones = {count_cone}\n')
             
-cone_type('#68')
+main()
