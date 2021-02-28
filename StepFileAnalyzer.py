@@ -66,8 +66,8 @@ def circle_type(identifier): # identifier = "#id"
             "z_axis: ":Z_AXIS,
         }
         
-        # for item, value in features.items():
-        #     print(item, value)
+        for item, value in features.items():
+            print(item, value)
                    
 
 def cylinder_type(identifier): # identifier = "#id"
@@ -127,8 +127,8 @@ def cylinder_type(identifier): # identifier = "#id"
             "z_axis: ":Z_AXIS,
         }
 
-        # for item,value in features.items():
-        #     print(item, value)
+        for item,value in features.items():
+            print(item, value)
         
 def line_type(identifier): # identifier = "#id"
 
@@ -175,8 +175,8 @@ def line_type(identifier): # identifier = "#id"
             "vert_parameters: ":"?",
         }
 
-        # for item, value in features.items():
-        #     print(item, value)
+        for item, value in features.items():
+            print(item, value)
 
 def plane_type(identifier): # identifier = "#id"
 
@@ -233,8 +233,8 @@ def plane_type(identifier): # identifier = "#id"
             "z_axis: ":Z_AXIS,
         }
 
-        # for item, value in features.items():
-        #     print(item, value)
+        for item, value in features.items():
+            print(item, value)
         
 def cone_type(identifier):
     try:
@@ -260,7 +260,7 @@ def cone_type(identifier):
 
         CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
         values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-3].split(',(')
-        CARTESIAN_POINT = values[1].replace(')','')
+        LOCATION = values[1].replace(')','')
 
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
         values = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-3].split(',(')
@@ -275,7 +275,7 @@ def cone_type(identifier):
             'apex: ': "?",
             'coefficients: ': "?",
             'face_indices: ': "?",
-            'location: ': "?",
+            'location: ': LOCATION,
             'radius: ': RADIUS,
             'type: ': 'Cone',
             'vert_indices: ': "?",
@@ -285,8 +285,58 @@ def cone_type(identifier):
             'z_axis: ': Z_AXIS,
         }
 
-        # for item,valor in features.items():
-        #     print(item, valor)
+        for item,valor in features.items():
+            print(item, valor)
+
+def toroidal_surface(identifier):
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        line = str(arquivoStep.__getitem__(identifier))
+        values = line[line.find('(')+1:-3].split(',')
+        
+        AXIS2_PLACEMENT_3D = values[1]
+        MAX_RADIUS = values[2]
+        MIN_RADIUS = values[3]
+        
+        AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
+        values = AXIS2_PLACEMENT_3D_LINE[AXIS2_PLACEMENT_3D_LINE.find('(')+1:-3].split(',')
+        
+        CARTESIAN_POINT = values[1]
+        DIRECTION_1 = values[2]
+        DIRECTION_2 = values[3]
+
+        CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
+        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find(',(')+1:-3].split(',')
+        LOCATION = values
+
+        DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
+        values = DIRECTION_1_LINE[DIRECTION_1_LINE.find(',(')+1:-3].split(',')
+        Z_AXIS = values
+
+        DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
+        values = DIRECTION_2_LINE[DIRECTION_2_LINE.find(',(')+1:-3].split(',')
+        X_AXIS = values
+
+        features = {
+            "face_indices: ": "?",
+            "location: ": LOCATION,
+            "max_radius: ": MAX_RADIUS,
+            "min_radius: ": MIN_RADIUS,
+            "type: ": "Torus",
+            "vert_indices: ": "?",
+            "vert_parameters: ": "?",
+            "x_axis: ": X_AXIS,
+            "y_axis: ": "?",
+            "z_axis: ": Z_AXIS,
+        }
+
+        for item,value in features.items():
+            print(item,value)
 
 
 def main():
@@ -369,8 +419,6 @@ def main():
             
             SURFACE_LINE = str(arquivoStep.__getitem__(SURFACE_TYPE.replace('(','').replace(')','')))
 
-            # Surfaces - *Conical and Toroidal
-
             if 'CYLINDRICAL' in SURFACE_LINE:
                 surface_visto = 1
                 #print(f'\n\n------------------CILINDRO {count_cylinder}----------------')
@@ -396,5 +444,14 @@ def main():
             surface_visto = 0
 
             print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}\nCones = {count_cone}\n')
-            
-main()
+
+print("\ntorus\n")            
+toroidal_surface("#185")
+print("\ncilindro\n")
+cylinder_type("#196")
+print("\ncirculo\n")
+circle_type("#894")
+print("\nplano\n")
+plane_type("#175")
+print("\ncone\n")
+cone_type("#249")
