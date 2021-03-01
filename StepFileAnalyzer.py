@@ -338,7 +338,52 @@ def toroidal_surface(identifier):
         for item,value in features.items():
             print(item,value)
 
+def spherical_surface(identifier):
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        line = str(arquivoStep.__getitem__(identifier))
+        values = line[line.find('(')+1:-3].split(',')
+        
+        AXIS2_PLACEMENT_3D = values[1]
+        RADIUS = values[2]
 
+        AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
+        values = AXIS2_PLACEMENT_3D_LINE[AXIS2_PLACEMENT_3D_LINE.find('(')+1:-3].split(',')
+        
+        CARTESIAN_POINT = values[1]
+        DIRECTION_1 = values[2]
+        DIRECTION_2 = values[3]
+
+        CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
+        LOCATION = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find(',(')+1:-3].split(',')
+        
+        DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
+        Z_AXIS = DIRECTION_1_LINE[DIRECTION_1_LINE.find(',')+1:-3].split(',')
+
+        DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
+        X_AXIS = DIRECTION_2_LINE[DIRECTION_2_LINE.find(',')+1:-3].split(',')
+
+        features = {
+            "coefficients: ": "?",
+            "face_indices: ": "?",
+            "location: ": LOCATION,
+            "radius: ": RADIUS,
+            "vert_indices: ": "?",
+            "vert_parameters: ": "?",
+            "x_axis: ": X_AXIS,
+            "y_axis: ": "?",
+            "z_axis: ": Z_AXIS, 
+        }
+
+        for item,value in features.items():
+            print(item,value)
+
+'''
 def main():
     count_plane = 0
     count_cylinder = 0
@@ -444,14 +489,5 @@ def main():
             surface_visto = 0
 
             print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}\nCones = {count_cone}\n')
+'''
 
-print("\ntorus\n")            
-toroidal_surface("#185")
-print("\ncilindro\n")
-cylinder_type("#196")
-print("\ncirculo\n")
-circle_type("#894")
-print("\nplano\n")
-plane_type("#175")
-print("\ncone\n")
-cone_type("#249")
