@@ -491,3 +491,37 @@ def main():
             print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}\nCones = {count_cone}\n')
 '''
 
+def main():
+    tem_linha = 0
+    tem_cilindro = 0
+    tem_plano = 0
+    tem_torus = 0
+    tem_circulo = 0
+    tem_esfera = 0
+    tem_bspline = 0
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        for line in arquivoStep:
+            if 'LINE' in str(line):
+                tem_linha+=1
+            if 'CIRCLE' in str(line):
+                tem_circulo+=1
+            if 'CYLINDRICAL_SURFACE' in str(line):
+                tem_cilindro+=1
+            if 'TOROIDAL_SURFACE' in str(line):
+                tem_torus+=1
+            if 'SPHERICAL_SURFACE' in str(line):
+                tem_esfera+=1
+            if 'PLANE' in str(line):
+                tem_plano+=1
+            if 'B_SPLINE'in str(line):
+                tem_bspline+=1
+        print(f'Line: {tem_bspline-tem_linha}\nCylinder: {tem_cilindro}\nPlane: {tem_plano-1}\nTorus: {tem_torus}\nCircle: {tem_circulo}\nSphere: {tem_esfera}')
+            
+
+main()
