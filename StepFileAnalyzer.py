@@ -11,6 +11,9 @@ argumentos.add_argument("-f", "--file", required=True, help="path of the input s
 args = vars(argumentos.parse_args())
 arquivo = args["file"]
 
+def y_axis_function(z_axis, x_axis):
+    return np.cross(z_axis,x_axis)
+
 def circle_type(identifier): # identifier = "#id"
     
     try:
@@ -54,6 +57,10 @@ def circle_type(identifier): # identifier = "#id"
         # name = values[0]
         X_AXIS = values[1].split(',')
 
+        Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
+
         features = {
             "location: ":LOCATION,
             "radius: ":RADIUS,
@@ -62,13 +69,12 @@ def circle_type(identifier): # identifier = "#id"
             "vert_indices: ":"?",
             "vert_parameters: ":"?",
             "x_axis: ":X_AXIS,
-            "y_axis: ":"?",
+            "y_axis: ":Y_AXIS,
             "z_axis: ":Z_AXIS,
         }
         
         for item, value in features.items():
-            print(item, value)
-                   
+            print(item, value)                   
 
 def cylinder_type(identifier): # identifier = "#id"
 
@@ -114,6 +120,10 @@ def cylinder_type(identifier): # identifier = "#id"
         # name = values[0]
         X_AXIS = values[1].split(',')
         
+        Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
+
         features = {
             "coefficients: ":"?",
             "face_indices: ":"?",
@@ -123,7 +133,7 @@ def cylinder_type(identifier): # identifier = "#id"
             "vert_indices: ":"?",
             "vert_parameters: ":"?",
             "x_axis: ":X_AXIS,
-            "y_axis: ":"?",
+            "y_axis: ":Y_AXIS,
             "z_axis: ":Z_AXIS,
         }
 
@@ -214,6 +224,7 @@ def plane_type(identifier): # identifier = "#id"
         # name = values[0]
         Z_AXIS = values[1].split(',')
         
+
         # Finds direction_2 line
         DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
         values = DIRECTION_2_LINE[DIRECTION_2_LINE.find('(')+1:-4].split(',(')
@@ -221,6 +232,10 @@ def plane_type(identifier): # identifier = "#id"
         # name = values[0]
         X_AXIS = values[1].split(',')
         
+        Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
+
         features = {
             "coefficients: ":"?",
             "face_indices: ":"?",
@@ -229,13 +244,13 @@ def plane_type(identifier): # identifier = "#id"
             "vert_indices: ":"?",
             "vert_parameters: ":"?",
             "x_axis: ":X_AXIS,
-            "y_axis: ":"?",
+            "y_axis: ":Y_AXIS,
             "z_axis: ":Z_AXIS,
         }
 
         for item, value in features.items():
             print(item, value)
-        
+
 def cone_type(identifier):
     try:
         arquivoStep = p21.readfile(arquivo)
@@ -264,11 +279,15 @@ def cone_type(identifier):
 
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
         values = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-3].split(',(')
-        Z_AXIS = values[1].replace(')','')
+        Z_AXIS = values[1].replace(')','').split(',')
 
         DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
         values = DIRECTION_2_LINE[DIRECTION_2_LINE.find('(')+1:-3].split(',(')
-        X_AXIS = values[1].replace(')','')
+        X_AXIS = values[1].replace(')','').split(',')
+
+        Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
 
         features = {
             'angle: ': ANGLE,
@@ -281,7 +300,7 @@ def cone_type(identifier):
             'vert_indices: ': "?",
             'vert_parameters: ': "?",
             'x_axis: ': X_AXIS,
-            'y_axis: ': "?",
+            'y_axis: ': Y_AXIS,
             'z_axis: ': Z_AXIS,
         }
 
@@ -315,13 +334,17 @@ def toroidal_surface(identifier):
         LOCATION = values
 
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
-        values = DIRECTION_1_LINE[DIRECTION_1_LINE.find(',(')+1:-3].split(',')
-        Z_AXIS = values
+        values = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-4].split(',(')
+        Z_AXIS = values[1].split(',')
 
         DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
-        values = DIRECTION_2_LINE[DIRECTION_2_LINE.find(',(')+1:-3].split(',')
-        X_AXIS = values
+        values = DIRECTION_2_LINE[DIRECTION_2_LINE.find('(')+1:-4].split(',(')
+        X_AXIS = values[1].split(',')
 
+        Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
+        
         features = {
             "face_indices: ": "?",
             "location: ": LOCATION,
@@ -331,12 +354,12 @@ def toroidal_surface(identifier):
             "vert_indices: ": "?",
             "vert_parameters: ": "?",
             "x_axis: ": X_AXIS,
-            "y_axis: ": "?",
+            "y_axis: ": Y_AXIS,
             "z_axis: ": Z_AXIS,
         }
 
         for item,value in features.items():
-            print(item,value)
+            print(item,value)       
 
 def spherical_surface(identifier):
     try:
@@ -363,10 +386,16 @@ def spherical_surface(identifier):
         LOCATION = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find(',(')+1:-3].split(',')
         
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
-        Z_AXIS = DIRECTION_1_LINE[DIRECTION_1_LINE.find(',')+1:-3].split(',')
+        Z_AXIS = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-4].split(',(')
+        Z_AXIS = Z_AXIS[1].split(',')
 
         DIRECTION_2_LINE = str(arquivoStep.__getitem__(DIRECTION_2))
-        X_AXIS = DIRECTION_2_LINE[DIRECTION_2_LINE.find(',')+1:-3].split(',')
+        X_AXIS = DIRECTION_2_LINE[DIRECTION_2_LINE.find('(')+1:-4].split(',(')
+        X_AXIS = X_AXIS[1].split(',')
+
+        Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
 
         features = {
             "coefficients: ": "?",
@@ -376,152 +405,10 @@ def spherical_surface(identifier):
             "vert_indices: ": "?",
             "vert_parameters: ": "?",
             "x_axis: ": X_AXIS,
-            "y_axis: ": "?",
+            "y_axis: ": Y_AXIS,
             "z_axis: ": Z_AXIS, 
         }
 
         for item,value in features.items():
             print(item,value)
 
-'''
-def main():
-    count_plane = 0
-    count_cylinder = 0
-    count_circle = 0
-    count_line = 0
-    count_cone = 0
-    try:
-        arquivoStep = p21.readfile(arquivo)
-    except IOError as e:
-        print(str(e))
-    except ParseError as e:
-        print(str(e))
-    else: # uploaded file
-        line_one = str(arquivoStep.__getitem__("#1"))
-        values = line_one[line_one.find('(')+1:-3].split(',(')
-        values = values[1].split('),')
-        
-        STYLED_ITEMS = values[0].split(',')
-
-        CHECKED_CURVES = []
-        for items in STYLED_ITEMS: # percorre os ids de faces
-            surface_visto = 0
-            line = str(arquivoStep.__getitem__(items))
-            values = line[line.find('(')+1:-3].split(',')
-            
-            ADVANCED_FACE = values[2]
-
-            ADVANCED_FACE_LINE = str(arquivoStep.__getitem__(ADVANCED_FACE))
-            values = ADVANCED_FACE_LINE[ADVANCED_FACE_LINE.find('(')+1:-3].split(',')
-            
-            FACE_OUTER_BOUND = values[1].replace("(","").replace(")","")
-            SURFACE_TYPE = values[2]
-            
-            # Curves
-            
-            FACE_OUTER_BOUND_LINE = str(arquivoStep.__getitem__(FACE_OUTER_BOUND))
-            values = FACE_OUTER_BOUND_LINE[FACE_OUTER_BOUND_LINE.find('(')+1:-3].split(',')
-            
-            EDGE_LOOP = values[1]
-            EDGE_LOOP_LINE = str(arquivoStep.__getitem__(EDGE_LOOP))
-            values = EDGE_LOOP_LINE[EDGE_LOOP_LINE.find('(')+1:-3].split(',')
-            
-            ORIENTED_EDGES = values[1:5] 
-
-            for EDGE_CURVE in ORIENTED_EDGES:
-                curve_visto = 0
-                ORIENTED_EDGES_LINE = str(arquivoStep.__getitem__(EDGE_CURVE.replace('(','').replace(')','')))
-                values = ORIENTED_EDGES_LINE[ORIENTED_EDGES_LINE.find('(')+1:-3].split(',')
-                
-                EDGE_CURVE = values[3]
-                EDGE_CURVE_LINE = str(arquivoStep.__getitem__(EDGE_CURVE))
-                values = EDGE_CURVE_LINE[EDGE_CURVE_LINE.find('(')+1:-3].split(',')
-
-                START_POINT = values[1]
-                END_POINT = values[2]
-                CURVE_TYPE = values[3]
-
-                CURVE_LINE = str(arquivoStep.__getitem__(CURVE_TYPE))
-                if 'CIRCLE' in CURVE_LINE and CURVE_TYPE not in CHECKED_CURVES:
-                    curve_visto = 1
-                    CHECKED_CURVES.append(CURVE_TYPE)
-                    #print(f'\n\n------------------CIRCULO {count_circle}----------------')
-                    count_circle+=1
-                    circle_type(CURVE_TYPE)
-                
-                if 'LINE' in CURVE_LINE and CURVE_TYPE not in CHECKED_CURVES:
-                    curve_visto = 1
-                    CHECKED_CURVES.append(CURVE_TYPE)
-                    #print(f'\n\n------------------LINHA {count_line}----------------')
-                    count_line+=1
-                    line_type(CURVE_TYPE)
-            
-                if curve_visto == 0:
-                    print(f'CURVA NÃO ENCONTRADA: \n{CURVE_LINE}\n')
-                
-                curve_visto = 0
-        
-            
-            SURFACE_LINE = str(arquivoStep.__getitem__(SURFACE_TYPE.replace('(','').replace(')','')))
-
-            if 'CYLINDRICAL' in SURFACE_LINE:
-                surface_visto = 1
-                #print(f'\n\n------------------CILINDRO {count_cylinder}----------------')
-                count_cylinder+=1
-                cylinder_type(SURFACE_TYPE)
-            
-            if 'PLANE' in SURFACE_LINE:
-                surface_visto = 1
-                #print(f'\n\n------------------PLANO {count_plane}----------------')
-                count_plane+=1
-                plane_type(SURFACE_TYPE)
-
-            if 'CONICAL' in SURFACE_LINE:
-                surface_visto = 1
-                #print(f'\n\n------------------CONE {count_cone}----------------')
-                count_cone+=1
-                cone_type(SURFACE_TYPE)
-
-            
-            if surface_visto == 0:
-                print(f'SUPERFICIE NÃO ENCONTRADO:\n{SURFACE_LINE}\n')
-            
-            surface_visto = 0
-
-            print(f'\nCilindros = {count_cylinder}\nPlanos = {count_plane}\nCirculos = {count_circle}\nLinhas = {count_line}\nCones = {count_cone}\n')
-'''
-
-def main():
-    tem_linha = 0
-    tem_cilindro = 0
-    tem_plano = 0
-    tem_torus = 0
-    tem_circulo = 0
-    tem_esfera = 0
-    tem_bspline = 0
-    try:
-        arquivoStep = p21.readfile(arquivo)
-    except IOError as e:
-        print(str(e))
-    except ParseError as e:
-        print(str(e))
-    else: # uploaded file
-        for line in arquivoStep:
-            if 'LINE' in str(line):
-                tem_linha+=1
-            if 'CIRCLE' in str(line):
-                tem_circulo+=1
-            if 'CYLINDRICAL_SURFACE' in str(line):
-                tem_cilindro+=1
-            if 'TOROIDAL_SURFACE' in str(line):
-                tem_torus+=1
-            if 'SPHERICAL_SURFACE' in str(line):
-                tem_esfera+=1
-            if 'PLANE' in str(line):
-                tem_plano+=1
-            if 'B_SPLINE'in str(line):
-                tem_bspline+=1
-        print(f'Line: {tem_bspline-tem_linha}\nCylinder: {tem_cilindro}\nPlane: {tem_plano-1}\nTorus: {tem_torus}\nCircle: {tem_circulo}\nSphere: {tem_esfera}')
-            
-
-main()
