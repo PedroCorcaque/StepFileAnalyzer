@@ -28,7 +28,7 @@ def circle_type(identifier): # identifier = "#id"
         
         # name = values[0]
         AXIS2_PLACEMENT_3D = values[1]
-        RADIUS = values[2]
+        RADIUS = float(values[2])*1000
         
         # Finds axis2_placement_3d line
         AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
@@ -43,6 +43,7 @@ def circle_type(identifier): # identifier = "#id"
         
         # name = values[0]
         LOCATION = values[1].split(',')
+        LOCATION = [float(i)*1000 for i in LOCATION]
         
         # Finds axis values
         AXIS_LINE = str(arquivoStep.__getitem__(Z_AXIS))
@@ -58,7 +59,9 @@ def circle_type(identifier): # identifier = "#id"
         X_AXIS = values[1].split(',')
 
         Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        Z_AXIS = np.array(Z_AXIS) # type numpy.ndarray
         X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        X_AXIS = np.array(X_AXIS) # type numpy.ndarray
         Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
 
         features = {
@@ -74,7 +77,7 @@ def circle_type(identifier): # identifier = "#id"
         }
         
         for item, value in features.items():
-            print(item, value)                   
+            print(item, value)                
 
 def cylinder_type(identifier): # identifier = "#id"
 
@@ -91,7 +94,7 @@ def cylinder_type(identifier): # identifier = "#id"
         
         # name = values[0]
         AXIS2_PLACEMENT_3D = values[1]
-        RADIUS = values[2]
+        RADIUS = float(values[2])*1000 # type float 
 
         # Finds axis2_placement_3d line
         AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
@@ -106,7 +109,8 @@ def cylinder_type(identifier): # identifier = "#id"
 
         # name = values[0]
         LOCATION = values[1].split(',')
-        
+        LOCATION = [float(i)*1000 for i in LOCATION] # type float in location list
+
         # Finds axis values
         AXIS_LINE = str(arquivoStep.__getitem__(Z_AXIS))
         values = AXIS_LINE[AXIS_LINE.find('(')+1:-4].split(',(') # Z axis
@@ -121,7 +125,9 @@ def cylinder_type(identifier): # identifier = "#id"
         X_AXIS = values[1].split(',')
         
         Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        Z_AXIS = np.array(Z_AXIS) # type numpy.ndarray
         X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        X_AXIS = np.array(X_AXIS) # type numpy.ndarray
         Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
 
         features = {
@@ -139,7 +145,7 @@ def cylinder_type(identifier): # identifier = "#id"
 
         for item,value in features.items():
             print(item, value)
-        
+
 def line_type(identifier): # identifier = "#id"
 
     try:
@@ -161,6 +167,7 @@ def line_type(identifier): # identifier = "#id"
         
         # name = values[0]
         LOCATION = values[1].split(',')
+        LOCATION = [float(i)*1000 for i in LOCATION]
         
         # Finds vector line
         VECTOR_LINE = str(arquivoStep.__getitem__(VECTOR))
@@ -175,6 +182,7 @@ def line_type(identifier): # identifier = "#id"
 
         # name = values[0]
         DIRECTION = values[1].split(',')
+        DIRECTION = [float(i) for i in DIRECTION]
         
         features = {
             "direction: ":DIRECTION,
@@ -216,6 +224,7 @@ def plane_type(identifier): # identifier = "#id"
         
         # name = values[0]
         LOCATION = values[1].split(',')
+        LOCATION = [float(i)*1000 for i in LOCATION]
         
         # Finds direction_1 line
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
@@ -233,7 +242,9 @@ def plane_type(identifier): # identifier = "#id"
         X_AXIS = values[1].split(',')
         
         Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        Z_AXIS = np.array(Z_AXIS) # type numpy.ndarray
         X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        X_AXIS = np.array(X_AXIS) # type numpy.ndarray
         Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
 
         features = {
@@ -249,7 +260,7 @@ def plane_type(identifier): # identifier = "#id"
         }
 
         for item, value in features.items():
-            print(item, value)
+            print(item, value)       
 
 def cone_type(identifier):
     try:
@@ -263,7 +274,7 @@ def cone_type(identifier):
         values = line[line.find('(')+1:-3].split(',')
         
         AXIS2_PLACEMENT_3D = values[1]
-        RADIUS = values[2]
+        RADIUS = float(values[2])*1000
         ANGLE = values[3]
 
         AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
@@ -274,8 +285,9 @@ def cone_type(identifier):
         DIRECTION_2 = values[3]
 
         CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
-        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-3].split(',(')
-        LOCATION = values[1].replace(')','')
+        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-4].split(',(')
+        LOCATION = values[1].split(',')
+        LOCATION = [float(i)*1000 for i in LOCATION]
 
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
         values = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-3].split(',(')
@@ -286,7 +298,9 @@ def cone_type(identifier):
         X_AXIS = values[1].replace(')','').split(',')
 
         Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        Z_AXIS = np.array(Z_AXIS) # type numpy.ndarray
         X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        X_AXIS = np.array(X_AXIS) # type numpy.ndarray
         Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
 
         features = {
@@ -305,7 +319,7 @@ def cone_type(identifier):
         }
 
         for item,valor in features.items():
-            print(item, valor)
+            print(item, valor)     
 
 def toroidal_surface(identifier):
     try:
@@ -319,8 +333,8 @@ def toroidal_surface(identifier):
         values = line[line.find('(')+1:-3].split(',')
         
         AXIS2_PLACEMENT_3D = values[1]
-        MAX_RADIUS = values[2]
-        MIN_RADIUS = values[3]
+        MAX_RADIUS = float(values[2])*1000
+        MIN_RADIUS = float(values[3])*1000
         
         AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
         values = AXIS2_PLACEMENT_3D_LINE[AXIS2_PLACEMENT_3D_LINE.find('(')+1:-3].split(',')
@@ -330,8 +344,9 @@ def toroidal_surface(identifier):
         DIRECTION_2 = values[3]
 
         CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
-        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find(',(')+1:-3].split(',')
-        LOCATION = values
+        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-4].split(',(')
+        LOCATION = values[1].split(',')
+        LOCATION = [float(i)*1000 for i in LOCATION]
 
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
         values = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-4].split(',(')
@@ -342,7 +357,9 @@ def toroidal_surface(identifier):
         X_AXIS = values[1].split(',')
 
         Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        Z_AXIS = np.array(Z_AXIS) # type numpy.ndarray
         X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        X_AXIS = np.array(X_AXIS) # type numpy.ndarray
         Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
         
         features = {
@@ -373,7 +390,7 @@ def spherical_surface(identifier):
         values = line[line.find('(')+1:-3].split(',')
         
         AXIS2_PLACEMENT_3D = values[1]
-        RADIUS = values[2]
+        RADIUS = float(values[2])*1000
 
         AXIS2_PLACEMENT_3D_LINE = str(arquivoStep.__getitem__(AXIS2_PLACEMENT_3D))
         values = AXIS2_PLACEMENT_3D_LINE[AXIS2_PLACEMENT_3D_LINE.find('(')+1:-3].split(',')
@@ -383,7 +400,9 @@ def spherical_surface(identifier):
         DIRECTION_2 = values[3]
 
         CARTESIAN_POINT_LINE = str(arquivoStep.__getitem__(CARTESIAN_POINT))
-        LOCATION = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find(',(')+1:-3].split(',')
+        values = CARTESIAN_POINT_LINE[CARTESIAN_POINT_LINE.find('(')+1:-4].split(',(')
+        LOCATION = values[1].split(',')
+        LOCATION = [float(i)*1000 for i in LOCATION]
         
         DIRECTION_1_LINE = str(arquivoStep.__getitem__(DIRECTION_1))
         Z_AXIS = DIRECTION_1_LINE[DIRECTION_1_LINE.find('(')+1:-4].split(',(')
@@ -394,7 +413,9 @@ def spherical_surface(identifier):
         X_AXIS = X_AXIS[1].split(',')
 
         Z_AXIS = [float(Z_AXIS[0]),float(Z_AXIS[1]),float(Z_AXIS[2])]
+        Z_AXIS = np.array(Z_AXIS) # type numpy.ndarray
         X_AXIS = [float(X_AXIS[0]),float(X_AXIS[1]),float(X_AXIS[2])]
+        X_AXIS = np.array(X_AXIS) # type numpy.ndarray
         Y_AXIS = y_axis_function(Z_AXIS, X_AXIS)
 
         features = {
