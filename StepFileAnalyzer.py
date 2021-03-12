@@ -433,3 +433,44 @@ def spherical_surface(identifier):
         for item,value in features.items():
             print(item,value)
 
+surfaces_list = ['CYLINDRICAL_SURFACE','PLANE','CIRCLE','SPHERICAL_SURFACE','TOROIDAL_SURFACE','LINE','CONICAL_SURFACE']
+
+def main():
+    # open file
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        data = arquivoStep.data[0]
+        line_ids_list = list(data.references()) 
+
+        for line_id in line_ids_list:
+            line = (arquivoStep.__getitem__(line_id))
+
+            try: # find surfaces lines
+                reference_name = line.entity.name
+                if reference_name in surfaces_list:
+                    if reference_name == 'CYLINDRICAL_SURFACE':
+                        cylinder_type(line_id)
+                    elif reference_name == 'PLANE':
+                        plane_type(line_id)
+                    elif reference_name == 'CIRCLE':
+                        circle_type(line_id)
+                    elif reference_name == 'SPHERICAL_SURFACE':
+                        spherical_surface(line_id)
+                    elif reference_name == 'TOROIDAL_SURFACE':
+                        toroidal_surface(line_id)
+                    elif reference_name == 'LINE':
+                        line_type(line_id)
+                    elif reference_name == 'CONICAL_SURFACE':
+                        cone_type(line_id)
+                    else:
+                        print("Just debug")
+
+            except AttributeError as e: # ComplexEntityInstace has no attribute entity
+                print(e)
+            
+main()
