@@ -470,7 +470,63 @@ def main():
                     else:
                         print("Just debug")
 
-            except AttributeError as e: # ComplexEntityInstace has no attribute entity
-                print(e)
+            except AttributeError as e: # ComplexEntityInstance has no attribute entity
+                print(str(e))
             
-main()
+def reference_name_finder():
+    # open file
+    try:
+        arquivoStep = p21.readfile(arquivo)
+    except IOError as e:
+        print(str(e))
+    except ParseError as e:
+        print(str(e))
+    else: # uploaded file
+        data = arquivoStep.data[0]
+        line_ids_list = list(data.references())
+
+        for line_id in line_ids_list:
+            line = arquivoStep.__getitem__(line_id)
+            try:
+                reference_name = line.entity.name 
+                if reference_name == 'MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION':
+                    styled_items_list = list(line.entity.params[1])
+                    for styled_items_id in styled_items_list:
+                        styled_items_line = arquivoStep.__getitem__(styled_items_id)
+                        styled_items_line_param = styled_items_line.entity.params
+                        
+                        advanced_face_id = styled_items_line_param[2]
+                        advanced_face_line = arquivoStep.__getitem__(advanced_face_id)
+                        advanced_face_line_param = advanced_face_line.entity.params
+
+                        face_bound_list = list(advanced_face_line_param[1]) 
+                        surfaces_ids = advanced_face_line_param[2]
+
+                        reference_name = arquivoStep.__getitem__(surfaces_ids).entity.name # REFERENCE NAME USED IN MAIN FUNCTION
+                        print(reference_name)
+
+                        for face_bound_ids in face_bound_list: # busca as linhas face_outer_bounds e face_bounds
+                            face_bound_line = arquivoStep.__getitem__(face_bound_ids)
+                            face_bound_line_param = face_bound_line.entity.params
+                            edge_loop_ids = face_bound_line_param[1]
+                            edge_loop_line = arquivoStep.__getitem__(edge_loop_ids)
+                            edge_loop_line_params = edge_loop_line.entity.params
+
+                            oriented_edge_ids_list = list(edge_loop_line_params[1])
+                            for oriented_edge_ids in oriented_edge_ids_list:
+                                oriented_edge_line = arquivoStep.__getitem__(oriented_edge_ids)
+                                oriented_edge_line_params = oriented_edge_line.entity.params
+                                edge_curve_id = oriented_edge_line_params[3]                  
+                                edge_curve_line = arquivoStep.__getitem__(edge_curve_id)
+                                edge_curve_line_params = edge_curve_line.entity.params
+                                
+                                start_point_id = edge_curve_line_params[1] # not yet used
+                                end_point_id = edge_curve_line_params[2] # not yet used
+                                type_id = edge_curve_line_params[3] 
+
+                                reference_name = arquivoStep.__getitem__(type_id).entity.name # REFERENCE NAME USED IN MAIN FUNCTION
+                                print(reference_name)
+                        
+            except AttributeError as e:
+                pass
+            
