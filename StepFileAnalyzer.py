@@ -435,7 +435,7 @@ def spherical_surface(identifier):
 
 surfaces_list = ['CYLINDRICAL_SURFACE','PLANE','CIRCLE','SPHERICAL_SURFACE','TOROIDAL_SURFACE','LINE','CONICAL_SURFACE']
 
-def main():
+def main_for_tests():
     # open file
     try:
         arquivoStep = p21.readfile(arquivo)
@@ -472,8 +472,37 @@ def main():
 
             except AttributeError as e: # ComplexEntityInstance has no attribute entity
                 print(str(e))
+
+'''
+reference_name_comparar is a function used to compare the type of curve with what already exists. It also calls the function to find the features.
+@params: reference name received from the reference_name_finder function
+@return: None
+'''
+def reference_name_comparer(reference_name, line_id):
+    if reference_name in surfaces_list:
+        if reference_name == 'CYLINDRICAL_SURFACE':
+            cylinder_type(line_id)
+        elif reference_name == 'PLANE':
+            plane_type(line_id)
+        elif reference_name == 'CIRCLE':
+            circle_type(line_id)
+        elif reference_name == 'SPHERICAL_SURFACE':
+            spherical_surface(line_id)
+        elif reference_name == 'TOROIDAL_SURFACE':
+            toroidal_surface(line_id)
+        elif reference_name == 'LINE':
+            line_type(line_id)
+        elif reference_name == 'CONICAL_SURFACE':
+            cone_type(line_id)
+        else:
+            print("Just debug")
             
-def reference_name_finder():
+'''
+reference_name_finder is a function used to find the name of the curves and surfaces.
+@params: None
+@return: retorna o nome para ser usada na função 'reference_name_comparer'
+'''
+def reference_name_finder(): 
     # open file
     try:
         arquivoStep = p21.readfile(arquivo)
@@ -500,10 +529,10 @@ def reference_name_finder():
                         advanced_face_line_param = advanced_face_line.entity.params
 
                         face_bound_list = list(advanced_face_line_param[1]) 
-                        surfaces_ids = advanced_face_line_param[2]
+                        surfaces_id = advanced_face_line_param[2]
 
-                        reference_name = arquivoStep.__getitem__(surfaces_ids).entity.name # REFERENCE NAME USED IN MAIN FUNCTION
-                        print(reference_name)
+                        reference_name = arquivoStep.__getitem__(surfaces_id).entity.name # REFERENCE NAME USED IN MAIN FUNCTION
+                        reference_name_comparer(reference_name, surfaces_id)
 
                         for face_bound_ids in face_bound_list: # busca as linhas face_outer_bounds e face_bounds
                             face_bound_line = arquivoStep.__getitem__(face_bound_ids)
@@ -525,8 +554,12 @@ def reference_name_finder():
                                 type_id = edge_curve_line_params[3] 
 
                                 reference_name = arquivoStep.__getitem__(type_id).entity.name # REFERENCE NAME USED IN MAIN FUNCTION
-                                print(reference_name)
+                                reference_name_comparer(reference_name, type_id)
                         
             except AttributeError as e:
                 pass
             
+def main():
+    reference_name_finder()
+
+main()
